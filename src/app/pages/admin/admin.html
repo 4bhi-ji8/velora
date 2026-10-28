@@ -1,0 +1,304 @@
+
+<div class="min-h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <aside class="fixed inset-y-0 left-0 w-64 bg-gray-900 p-6 text-white">
+    <h1 class="text-2xl font-bold tracking-wide">VELORA</h1>
+    <p class="mt-1 text-xs text-gray-400">ADMIN PANEL</p>
+
+    <nav class="mt-10 space-y-3">
+      <a href="#" class="block rounded-lg bg-gray-800 px-4 py-3">
+        Dashboard
+      </a>
+      <a routerLink="/admin/products" routerLinkActive="bg-gray-800" class="block rounded-lg px-4 py-3 text-gray-300 hover:bg-gray-800">
+        Products
+      </a>
+      <a href="#" routerLink="/admin/orders" routerLinkActive="bg-gray-800" class="block rounded-lg px-4 py-3 text-gray-300 hover:bg-gray-800">
+        Orders
+      </a>
+      <a href="#" routerLink="/admin/customers" routerLinkActive="bg-gray-800" class="block rounded-lg px-4 py-3 text-gray-300 hover:bg-gray-800">
+        Customers
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-8">
+    <header class="mb-8">
+      <p class="text-sm text-gray-500">VELORA / ADMIN</p>
+      <h2 class="mt-2 text-3xl font-bold text-gray-900">Dashboard</h2>
+      <p class="mt-2 text-gray-600">Manage your store from one place.</p>
+    </header>
+
+    <!-- Summary Cards -->
+    <section class="grid grid-cols-3 gap-6">
+      <div class="rounded-xl bg-white p-6 shadow-sm">
+        <p class="text-sm text-gray-500">Total Products</p>
+        <h3 class="mt-3 text-3xl font-bold">{{ products().length }}</h3>
+      </div>
+
+      <div class="rounded-xl bg-white p-6 shadow-sm">
+        <p class="text-sm text-gray-500">Total Orders</p>
+        <h3 class="mt-3 text-3xl font-bold">0</h3>
+      </div>
+
+      <div class="rounded-xl bg-white p-6 shadow-sm">
+        <p class="text-sm text-gray-500">Total Customers</p>
+        <h3 class="mt-3 text-3xl font-bold">0</h3>
+      </div>
+    </section>
+
+    <!-- Product Management -->
+    <section class="mt-10">
+      <!-- Products Header -->
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-gray-900">Products</h2>
+          <p class="mt-1 text-sm text-gray-500">
+            Manage your store inventory.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          (click)="showProductForm.set(!showProductForm())"
+          class="rounded-lg bg-gray-900 px-5 py-3 text-sm font-semibold text-white hover:bg-gray-700"
+        >
+          {{ showProductForm() ? 'Cancel' : '+ Add Product' }}
+        </button>
+      </div>
+
+      <!-- Add Product Form -->
+      @if (showProductForm()) {
+        <section class="mb-8 rounded-xl bg-white p-6 shadow-sm">
+          <h2 class="mb-5 text-xl font-bold text-gray-900">
+            Add New Product
+          </h2>
+
+          <form
+            #productForm="ngForm"
+            (ngSubmit)="addProduct(productForm)"
+            class="grid grid-cols-1 gap-5 sm:grid-cols-2"
+          >
+            <!-- Product Name -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Product Name
+              </label>
+
+              <input
+                type="text"
+                name="name"
+                [(ngModel)]="newProduct.name"
+                #nameField="ngModel"
+                required
+                placeholder="e.g. Classic Oxford Shirt"
+                class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
+                [class.border-red-500]="nameField.invalid && (nameField.touched || productForm.submitted)"
+              />
+
+              @if (nameField.invalid && (nameField.touched || productForm.submitted)) {
+                <p class="mt-1 text-sm text-red-600">
+                  Product name is required.
+                </p>
+              }
+            </div>
+
+            <!-- Image URL -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Image URL
+              </label>
+
+              <input
+                type="url"
+                name="image"
+                [(ngModel)]="newProduct.image"
+                #imageField="ngModel"
+                required
+                placeholder="https://example.com/image.jpg"
+                class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
+                [class.border-red-500]="imageField.invalid && (imageField.touched || productForm.submitted)"
+              />
+
+              @if (imageField.invalid && (imageField.touched || productForm.submitted)) {
+                <p class="mt-1 text-sm text-red-600">
+                  Please enter a valid image URL.
+                </p>
+              }
+            </div>
+
+            <!-- Price -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Price (₹)
+              </label>
+
+              <input
+                type="number"
+                name="price"
+                [(ngModel)]="newProduct.price"
+                #priceField="ngModel"
+                required
+                min="0.01"
+                placeholder="1499"
+                class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
+                [class.border-red-500]="priceField.invalid && (priceField.touched || productForm.submitted)"
+              />
+
+              @if (priceField.invalid && (priceField.touched || productForm.submitted)) {
+                <p class="mt-1 text-sm text-red-600">
+                  Enter a price greater than zero.
+                </p>
+              }
+            </div>
+
+            <!-- Stock -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Stock Quantity
+              </label>
+
+              <input
+                type="number"
+                name="stock"
+                [(ngModel)]="newProduct.stock"
+                #stockField="ngModel"
+                required
+                min="0"
+                step="1"
+                placeholder="25"
+                class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
+                [class.border-red-500]="stockField.invalid && (stockField.touched || productForm.submitted)"
+              />
+
+              @if (stockField.invalid && (stockField.touched || productForm.submitted)) {
+                <p class="mt-1 text-sm text-red-600">
+                  Enter a valid stock quantity (zero or more).
+                </p>
+              }
+            </div>
+
+            <!-- Category -->
+            <div class="sm:col-span-2">
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Category
+              </label>
+
+              <select
+                name="category"
+                [(ngModel)]="newProduct.category"
+                #categoryField="ngModel"
+                required
+                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-gray-900"
+                [class.border-red-500]="categoryField.invalid && (categoryField.touched || productForm.submitted)"
+              >
+                <option value="">Select a category</option>
+
+                @for (category of categories(); track category._id) {
+                  <option [value]="category._id">
+                    {{ category.name }}
+                  </option>
+                }
+              </select>
+
+              @if (categoryField.invalid && (categoryField.touched || productForm.submitted)) {
+                <p class="mt-1 text-sm text-red-600">
+                  Please select a category.
+                </p>
+              }
+            </div>
+
+            <!-- Description -->
+            <div class="sm:col-span-2">
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Description
+              </label>
+
+              <textarea
+                name="description"
+                [(ngModel)]="newProduct.description"
+                #descriptionField="ngModel"
+                required
+                rows="4"
+                placeholder="Describe the product..."
+                class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
+                [class.border-red-500]="descriptionField.invalid && (descriptionField.touched || productForm.submitted)"
+              ></textarea>
+
+              @if (descriptionField.invalid && (descriptionField.touched || productForm.submitted)) {
+                <p class="mt-1 text-sm text-red-600">
+                  Description is required.
+                </p>
+              }
+            </div>
+
+            <!-- Submit -->
+            <div class="sm:col-span-2">
+              <button
+                type="submit"
+                [disabled]="productForm.invalid"
+                class="rounded-lg bg-gray-900 px-6 py-3 text-sm font-semibold text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Save Product
+              </button>
+
+              @if (productForm.invalid) {
+                <p class="mt-2 text-sm text-gray-500">
+                  Complete all required fields to enable saving.
+                </p>
+              }
+            </div>
+          </form>
+        </section>
+      }
+
+      <!-- Products Table -->
+      <div class="overflow-x-auto rounded-xl bg-white shadow-sm">
+        <table class="w-full text-left text-sm">
+          <thead class="border-b bg-gray-50 text-gray-500">
+            <tr>
+              <th class="px-6 py-4 font-medium">Product</th>
+              <th class="px-6 py-4 font-medium">Category</th>
+              <th class="px-6 py-4 font-medium">Price</th>
+              <th class="px-6 py-4 font-medium">Stock</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-100">
+            @for (product of products(); track product._id) {
+              <tr>
+                <td class="px-6 py-4 font-medium text-gray-900">
+                  {{ product.name }}
+                </td>
+
+                <td class="px-6 py-4 text-gray-600">
+                  {{ product.category.name }}
+                </td>
+
+                <td class="px-6 py-4 text-gray-900">
+                  ₹{{ product.price }}
+                </td>
+
+                <td class="px-6 py-4">
+                  @if (product.stock > 0) {
+                    <span class="text-green-700">
+                      {{ product.stock }} units
+                    </span>
+                  } @else {
+                    <span class="text-red-600">Out of stock</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="px-6 py-10 text-center text-gray-500">
+                  No products found.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
