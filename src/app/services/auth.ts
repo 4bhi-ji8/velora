@@ -1,6 +1,8 @@
+
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from '../models/user';
+import { environment } from '../../environments/environments';
 
 interface LoginResponse {
   status: string;
@@ -12,23 +14,23 @@ interface LoginResponse {
   providedIn: 'root',
 })
 export class AuthService {
+  private http = inject(HttpClient);
 
-  private http = inject(HttpClient)
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   login(email: string, password: string) {
     return this.http.post<LoginResponse>(
-      'http://localhost:3000/api/auth/login',
+      `${this.apiUrl}/login`,
       {
         email,
-        password
+        password,
       }
-    )
+    );
   }
 
   setToken(token: string): void {
-    localStorage.setItem('token' ,token)
+    localStorage.setItem('token', token);
   }
-
 
   getToken(): string | null {
     return localStorage.getItem('token');
@@ -36,8 +38,8 @@ export class AuthService {
 
   getProfile() {
     return this.http.get<User>(
-      'http://localhost:3000/api/auth/profile'
-    )
+      `${this.apiUrl}/profile`
+    );
   }
 
   logout(): void {
@@ -48,16 +50,16 @@ export class AuthService {
     fullName: string,
     email: string,
     phone: string,
-    password : string
-  ){
+    password: string
+  ) {
     return this.http.post(
-      'http://localhost:3000/api/auth/register',
+      `${this.apiUrl}/register`,
       {
         fullName,
         email,
         phone,
-        password
+        password,
       }
-    )
+    );
   }
 }

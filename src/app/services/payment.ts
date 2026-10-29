@@ -1,5 +1,7 @@
+
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
@@ -7,10 +9,12 @@ import { inject, Injectable } from '@angular/core';
 export class PaymentService {
   private http = inject(HttpClient);
 
-  createRazorpayOrder(addressId : string) {
-    return this.http.post (
-      'http://localhost:3000/api/payments/create-order',
-      {addressId}
-    )
+  private apiUrl = `${environment.apiUrl}/payments`;
+
+  createRazorpayOrder(addressId: string) {
+    return this.http.post(
+      `${this.apiUrl}/create-order`,
+      { addressId }
+    );
   }
 }

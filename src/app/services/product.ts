@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product';
+import { environment } from '../../environments/environments';
 
 interface ProductResponse{
     status: string;
@@ -22,7 +23,7 @@ interface ProductResponse{
 export class ProductService {
   private http = inject(HttpClient);
 
-  private apiUrl = 'http://localhost:3000/api/products';
+  private apiUrl = `${environment.apiUrl}/products`;
 
   getProducts(): Observable<ProductResponse> {
     return this.http.get<ProductResponse>(this.apiUrl);
