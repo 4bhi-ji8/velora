@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from '../models/user';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 interface LoginResponse {
   status: string;
